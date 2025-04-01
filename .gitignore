@@ -1,0 +1,7 @@
+RawData/
+output/
+
+# Ignore compiled files
+*.log
+*.pyc
+node_modules/
