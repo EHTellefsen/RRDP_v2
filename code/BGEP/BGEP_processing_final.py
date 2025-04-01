@@ -9,33 +9,36 @@ measured during the Beaufort Gyre Exploration Project
 """
 
 # -- File info -- #
-__author__ = 'Ida Olsen'
-__contributors__ = ['Henriette Skorup', 'Emil Haaber Tellefsen']
+__author__ = ['Emil Haaber Tellefsen','Ida Olsen']
+__contributors__ = 'Henriette Skorup'
 __contact__ = ['s174020@student.dtu.dk']
-__version__ = '0'
-__date__ = '2021-10-22'
-__edited__ = '2024-07-31'
-__dataAvailablity__ = ''
+__version__ = '2'
+__dateCreated__ = '2021-10-22'
+__lastEdited__ = '2025-01-04'
+__lastDataAccess__ = '2025-01-04'
+__dataAvailablity__ = 'https://www2.whoi.edu/site/beaufortgyre/data/mooring-data/'
+
 
 # -- Built-in modules -- #
 import os.path
 import datetime as dt
-import glob
 import sys
+import zipfile
+from pathlib import Path
 
-# -- Third-part modules -- #
+# -- Third-party modules -- #
 import numpy as np
 import pandas as pd
 
 # -- Proprietary modules -- #
-sys.path.append(os.path.dirname(os.getcwd()))
+parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.insert(0, parent_dir)
 from Warren import SnowDepth, SWE
 import Functions
 
 #%% Main
 ofile_name = 'ESACCIplus-SEAICE-RRDP2+-SID-BGEP-V3.dat'
 datadir, save_path_plot, save_path_data, ofile = Functions.referenceDirs('BGEP', ofile_name, 'Arctic')
-files = glob.glob(save_path_data+'*')
 
 count = 0
 for ifile in os.listdir(datadir):
@@ -49,19 +52,21 @@ for ifile in os.listdir(datadir):
     dataOut.pp_flag = 0
 
     # reading header and extracting info
-    with open(file,'rb') as myFile:
-        line = myFile.readline()
-        line = line.strip()
-        print(line)
 
-        line = line.split()
-        dataOut.obsID = 'BGEP_Mooring' + line[3].decode('utf8')[:-1]
-        lat = float(line[4].decode('utf8')) + float(line[5].decode('utf8'))/60 # convert to deicmal degrees
-        if line[9].decode('utf8') == 'W':
-            lon = - float(line[7].decode('utf8')) - float(line[8].decode('utf8'))/60
-        elif line[9].decode('utf8') == 'E':
-            lon = float(line[7].decode('utf8')) + float(line[8].decode('utf8'))/60
-    myFile.close()
+    with zipfile.ZipFile(file) as myzip:
+        with myzip.open(Path(file).stem + '.dat') as myFile:
+            line = myFile.readline()
+            line = line.strip()
+            print(line)
+
+            line = line.split()
+            dataOut.obsID = 'BGEP_Mooring' + line[3].decode('utf8')[:-1]
+            lat = float(line[4].decode('utf8')) + float(line[5].decode('utf8'))/60 # convert to deicmal degrees
+            if line[9].decode('utf8') == 'W':
+                lon = - float(line[7].decode('utf8')) - float(line[8].decode('utf8'))/60
+            elif line[9].decode('utf8') == 'E':
+                lon = float(line[7].decode('utf8')) + float(line[8].decode('utf8'))/60
+        myFile.close()
 
     # Reads observation data from ASCII-file
     df = pd.read_table(file, skiprows=1, sep="\\s+", dtype={'%date': str, 'time(UTC)': 'float32', 'draft(m)': 'float32'})                

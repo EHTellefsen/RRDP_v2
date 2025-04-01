@@ -556,10 +556,10 @@ def sort_final_data(ofile, save_path_plot, HS='NH', primary='SIT', showplot = Fa
 # =============================================================================
 
 def referenceDirs(missionName, ofileName, HS):
-    basedir = os.path.dirname(os.path.dirname(os.getcwd()))
+    basedir = os.path.dirname(os.path.dirname(__file__))
     datadir = basedir + '/RawData/'+HS+'/'+missionName
-    save_path_plot  = basedir + '/FINAL/'+HS+'/'+missionName+'/fig/'
-    save_path_data = basedir + '/FINAL/'+HS+'/'+missionName+'/final/'
-    ofile = basedir +'/FINAL/'+HS+'/'+missionName+'/final/'+ofileName
+    save_path_plot  = basedir + '/ReprocessedData/'+HS+'/'+missionName+'/fig/'
+    save_path_data = basedir + '/ReprocessedData/'+HS+'/'+missionName+'/data/'
+    ofile = basedir +'/ReprocessedData/'+HS+'/'+missionName+'/data/'+ofileName
 
     return datadir, save_path_plot, save_path_data, ofile

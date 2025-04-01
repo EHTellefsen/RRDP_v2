@@ -1,6 +1,6 @@
 RawData/
-output/
-
+ReprocessedData/
+code/test.ipynb
 # Ignore compiled files
 *.log
 *.pyc
