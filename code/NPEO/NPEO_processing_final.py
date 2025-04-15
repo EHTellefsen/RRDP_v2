@@ -6,25 +6,28 @@ measured at the North Pole Enviromental Observatory
 
 # -- File info -- #
 
-__author__ = 'Ida Olsen'
-__contributors__ = ['Henriette Skorup','Emil Haaber Tellefsen']
+__author__ = ['Ida Olsen','Emil Haaber Tellefsen']
+__contributors__ = 'Henriette Skorup'
 __contact__ = ['s174020@student.dtu.dk']
-__version__ = '0'
-__date__ = '2021-08-31'
-__edited__ = '2024-02-08'
-
+__version__ = '2'
+__dateCreated__ = '2021-08-31'
+__lastEdited__ = '2025-15-04'
+__lastDataAccess__ = '2025-01-04'
+__dataAvailablity__ = 'https://arcticdata.io/catalog/view/doi%3A10.18739%2FA29033'
 # -- Built-in modules -- #
 import os.path
 import datetime as dt
 import glob
 import re
+import zipfile
 import sys
 
 # -- Third-part modules -- #
 import numpy as np
 
 # -- Proprietary modules -- #
-sys.path.append(os.path.dirname(os.getcwd()))
+parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.insert(0, parent_dir)
 from Warren import SnowDepth, SWE
 import Functions
 
@@ -57,6 +60,7 @@ def Get_lat_lon(file):
     latlon = b'Position'
     
     count = 0
+
     with open(file, 'rb') as myFile:
         for num,line in enumerate(myFile,1):
             count += 1

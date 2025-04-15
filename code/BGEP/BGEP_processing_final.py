@@ -14,7 +14,7 @@ __contributors__ = 'Henriette Skorup'
 __contact__ = ['s174020@student.dtu.dk']
 __version__ = '2'
 __dateCreated__ = '2021-10-22'
-__lastEdited__ = '2025-01-04'
+__lastEdited__ = '2025-15-04'
 __lastDataAccess__ = '2025-01-04'
 __dataAvailablity__ = 'https://www2.whoi.edu/site/beaufortgyre/data/mooring-data/'
 
@@ -69,8 +69,14 @@ for ifile in os.listdir(datadir):
         myFile.close()
 
     # Reads observation data from ASCII-file
-    df = pd.read_table(file, skiprows=1, sep="\\s+", dtype={'%date': str, 'time(UTC)': 'float32', 'draft(m)': 'float32'})                
-    dates = df['%date'].to_numpy()
+    df = pd.read_table(
+        file,
+        sep=r"\s+",
+        names=['date', 'time(UTC)', 'draft(m)'],
+        dtype={'date': str, 'time(UTC)': 'float32', 'draft(m)': 'float32'},
+        skiprows=2  # Remove this if the file has no header or skip more rows as needed
+    )            
+    dates = df['date'].to_numpy()
     time = df['time(UTC)'].to_numpy() #UTC - duration of each time used on each measurement
     SID = df['draft(m)'].to_numpy() #m
     SID_Unc = 0.10 * np.ones(len(SID)) # uncertainty of 10 cm approx.
@@ -123,6 +129,6 @@ for ifile in os.listdir(datadir):
     dataOut.Check_Output()
         
     # print data to output file
-    dataOut.Print_to_output(ofile, primary='SD')
+    dataOut.Print_to_output(ofile, primary='SID')
 
 Functions.sort_final_data(ofile, save_path_plot=save_path_plot, HS='NH', primary='SID', showplot = False)
